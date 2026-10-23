@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EstiloÚnico</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+    header { background: #fff; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 10; }
+    header h1 { font-size: 1.6rem; color: #222; }
+    .filtros { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+    .filtros button { padding: 8px 16px; border: 1px solid #ddd; background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.9rem; }
+    .filtros button.activo { background: #333; color: #fff; border-color: #333; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+    .card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-4px); }
+    .card img { width: 100%; height: 320px; object-fit: cover; }
+    .card-body { padding: 16px; }
+    .card-body .tag { font-size: 0.75rem; background: #eee; padding: 3px 8px; border-radius: 10px; display: inline-block; margin-bottom: 6px; }
+    .card-body h3 { font-size: 1rem; margin-bottom: 4px; }
+    .card-body .desc { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
+    .card-body .precio { font-size: 1.2rem; font-weight: bold; color: #222; }
+    .card-body .talles { margin: 10px 0; }
+    .card-body .talles span { display: inline-block; padding: 4px 10px; margin: 2px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
+    .card-body .talles span.sel { background: #333; color: #fff; }
+    .btn-encargar { display: block; width: 100%; padding: 12px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; text-align: center; text-decoration: none; }
+    .btn-encargar:active { background: #1da851; }
+    .agotado { display: block; width: 100%; padding: 12px; background: #ccc; color: #888; border: none; border-radius: 8px; font-size: 1rem; margin-top: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛍️ EstiloÚnico</h1>
+    <div class="filtros" id="filtros"></div>
+  </header>
+  <div class="grid" id="grid"></div>
+
+  <script src="data.js"></script>
+  <script>
+    const WHATSAPP = "5493468542942";
+    let filtroGenero = "todos";
+    let filtroCategoria = "todas";
+
+    function renderFiltros() {
+      const generos = ["todos", ...new Set(productos.map(p => p.genero))];
+      const cat = productos.filter(p => filtroGenero === "todos" || p.genero === filtroGenero);
+      const categorias = ["todas", ...new Set(cat.map(p => p.categoria))];
+
+      const cont = document.getElementById("filtros");
+      cont.innerHTML = "";
+      generos.forEach(g => {
+        const btn = document.createElement("button");
+        btn.textContent = g === "todos" ? "Todos" : g.charAt(0).toUpperCase() + g.slice(1);
+        btn.className = filtroGenero === g ? "activo" : "";
+        btn.onclick = () => { filtroGenero = g; filtroCategoria = "todas"; render(); };
+        cont.appendChild(btn);
+      });
+      cont.innerHTML += "<span style='width:1px'></span>";
+      categorias.forEach(c => {
+        const btn = document.createElement("button");
+        btn.textContent = c === "todas" ? "Todas" : c;
+        btn.className = filtroCategoria === c ? "activo" : "";
+        btn.onclick = () => { filtroCategoria = c; render(); };
+        cont.appendChild(btn);
+      });
+    }
+
+    function render() {
+      renderFiltros();
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+      const visibles = productos.filter(p =>
+        (filtroGenero === "todos" || p.genero === filtroGenero) &&
+        (filtroCategoria === "todas" || p.categoria === filtroCategoria)
+      );
+      visibles.forEach((p, i) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${p.imagen}" alt="${p.nombre}">
+          <div class="card-body">
+            <span class="tag">${p.genero}</span>
+            <span class="tag">${p.categoria}</span>
+            <h3>${p.nombre}</h3>
+            <p class="desc">${p.descripcion}</p>
+            <p class="precio">$ ${p.precio.toLocaleString("es-AR")}</p>
+            <div class="talles" data-idx="${i}">
+              ${p.talles.map(t => `<span data-talle="${t}">${t}</span>`).join("")}
+            </div>
+            ${p.disponible
+              ? `<a class="btn-encargar" id="btn-${i}" href="#" onclick="encargar(${i}, this)">📲 Encargar</a>`
+              : `<span class="agotado">Agotado</span>`
+            }
+          </div>`;
+        grid.appendChild(card);
+
+        // Selector de talles
+        card.querySelectorAll(".talles span").forEach(sp => {
+          sp.onclick = () => {
+            card.querySelectorAll(".talles span").forEach(s => s.classList.remove("sel"));
+            sp.classList.add("sel");
+          };
+        });
+      });
+    }
+
+    function encargar(idx, btn) {
+      const p = productos[idx];
+      const cont = btn.previousElementSibling;
+      const sel = cont.querySelector(".sel");
+      const talle = sel ? sel.textContent : "a definir";
+      const msg = `Hola! Quiero encargar: ${p.nombre} - Talle ${talle} - $${p.precio.toLocaleString("es-AR")}`;
+      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    render();
+  </script>
+</body>
+</html>   
