@@ -1,231 +1,103 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EstiloÚnico</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+const categorias = [
+  { nombre: "Vestidos", genero: "mujer", imagen: "https://i.ibb.co/t7VWDtq/vestidos-mujeres.png" },
+  { nombre: "Remeras", genero: "mujer", imagen: "https://i.ibb.co/KxXNXCXZ/remeras-mujeres.png" },
+  { nombre: "Pantalones", genero: "mujer", imagen: "https://i.ibb.co/kgyQxrfV/pantalones-mujeres.png" },
+  { nombre: "Conjuntos", genero: "mujer", imagen: "https://i.ibb.co/9CFF0Tb/conjuntos-mujeres.png" },
+  { nombre: "Buzos/Camperas", genero: "hombre", imagen: "https://i.ibb.co/d8Ns538/buzo-camperas-de-hombre.png" },
+  { nombre: "Remeras", genero: "hombre", imagen: "https://i.ibb.co/Fbdmxrnh/remeras-hombres.png" },
+  { nombre: "Pantalones", genero: "hombre", imagen: "https://i.ibb.co/bk3t3bZ/pantalones-homrbes.png" },
+  { nombre: "Conjuntos", genero: "hombre", imagen: "https://i.ibb.co/GQpNbDJP/conjunto-hombre.png" }
+];
 
-    /* HEADER */
-    header { background: #fff; padding: 15px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-    .header-top { display: flex; align-items: center; gap: 12px; }
-    .hamburger { width: 36px; height: 36px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
-    .hamburger span { display: block; width: 22px; height: 2px; background: #333; border-radius: 2px; transition: 0.3s; }
-    header h1 { font-size: 1.4rem; color: #222; flex: 1; }
-    .search-box { display: flex; align-items: center; background: #f0f0f0; border-radius: 20px; padding: 8px 14px; flex: 2; max-width: 300px; }
-    .search-box input { border: none; background: none; outline: none; font-size: 0.9rem; width: 100%; }
-    .search-box svg { width: 18px; height: 18px; margin-right: 8px; fill: #999; }
-
-    /* MENU LATERAL (HAMBURGUESA) */
-    .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #fff; box-shadow: 2px 0 12px rgba(0,0,0,0.15); z-index: 200; transition: left 0.3s; padding: 20px; overflow-y: auto; }
-    .sidebar.abierto { left: 0; }
-    .sidebar h2 { font-size: 1.1rem; margin-bottom: 16px; color: #222; }
-    .sidebar .seccion { margin-bottom: 20px; }
-    .sidebar .seccion h3 { font-size: 0.85rem; text-transform: uppercase; color: #888; margin-bottom: 8px; }
-    .sidebar .seccion button { display: block; width: 100%; text-align: left; padding: 10px 12px; border: none; background: none; cursor: pointer; font-size: 0.95rem; border-radius: 8px; }
-    .sidebar .seccion button:hover { background: #f0f0f0; }
-    .sidebar .seccion button.activo { background: #333; color: #fff; }
-    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 150; display: none; }
-    .overlay.visible { display: block; }
-    .cerrar-menu { position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 1.5rem; cursor: pointer; color: #666; }
-
-    /* FILTROS HORIZONTALES */
-    .filtros { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
-    .filtros button { padding: 7px 14px; border: 1px solid #ddd; background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
-    .filtros button.activo { background: #333; color: #fff; border-color: #333; }
-
-    /* GRID */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-    .card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; }
-    .card:hover { transform: translateY(-4px); }
-    .card img { width: 100%; height: 320px; object-fit: cover; }
-    .card-body { padding: 16px; }
-    .card-body .tag { font-size: 0.75rem; background: #eee; padding: 3px 8px; border-radius: 10px; display: inline-block; margin-bottom: 6px; }
-    .card-body h3 { font-size: 1rem; margin-bottom: 4px; }
-    .card-body .desc { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
-    .card-body .precio { font-size: 1.2rem; font-weight: bold; color: #222; }
-    .card-body .talles { margin: 10px 0; }
-    .card-body .talles span { display: inline-block; padding: 4px 10px; margin: 2px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.8rem; cursor: pointer; }
-    .card-body .talles span.sel { background: #333; color: #fff; }
-    .btn-encargar { display: block; width: 100%; padding: 12px; background: #25D366; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; text-align: center; text-decoration: none; }
-    .btn-encargar:active { background: #1da851; }
-    .agotado { display: block; width: 100%; padding: 12px; background: #ccc; color: #888; border: none; border-radius: 8px; font-size: 1rem; margin-top: 10px; text-align: center; }
-    .sin-resultados { text-align: center; padding: 60px 20px; color: #999; font-size: 1.1rem; grid-column: 1 / -1; }
-  </style>
-</head>
-<body>
-
-  <!-- OVERLAY -->
-  <div class="overlay" id="overlay" onclick="cerrarSidebar()"></div>
-
-  <!-- SIDEBAR (MENÚ HAMBURGUESA) -->
-  <div class="sidebar" id="sidebar">
-    <button class="cerrar-menu" onclick="cerrarSidebar()">&times;</button>
-    <h2>Filtrar</h2>
-
-    <div class="seccion">
-      <h3>Sexo</h3>
-      <button data-filtro="genero" data-valor="todos" class="activo" onclick="setFiltro('genero','todos')">Todos</button>
-      <button data-filtro="genero" data-valor="mujer" onclick="setFiltro('genero','mujer')">Mujer</button>
-      <button data-filtro="genero" data-valor="hombre" onclick="setFiltro('genero','hombre')">Hombre</button>
-    </div>
-
-    <div class="seccion">
-      <h3>Talle</h3>
-      <button data-filtro="talle" data-valor="todos" class="activo" onclick="setFiltro('talle','todos')">Todos</button>
-      <button data-filtro="talle" data-valor="XS" onclick="setFiltro('talle','XS')">XS</button>
-      <button data-filtro="talle" data-valor="S" onclick="setFiltro('talle','S')">S</button>
-      <button data-filtro="talle" data-valor="M" onclick="setFiltro('talle','M')">M</button>
-      <button data-filtro="talle" data-valor="L" onclick="setFiltro('talle','L')">L</button>
-      <button data-filtro="talle" data-valor="XL" onclick="setFiltro('talle','XL')">XL</button>
-      <button data-filtro="talle" data-valor="XXL" onclick="setFiltro('talle','XXL')">XXL</button>
-    </div>
-  </div>
-
-  <!-- HEADER -->
-  <header>
-    <div class="header-top">
-      <button class="hamburger" onclick="abrirSidebar()">
-        <span></span><span></span><span></span>
-      </button>
-      <h1>EstiloÚnico</h1>
-      <div class="search-box">
-        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
-        <input type="text" id="buscador" placeholder="Buscar prenda..." oninput="render()">
-      </div>
-    </div>
-    <div class="filtros" id="filtros"></div>
-  </header>
-
-  <!-- GRID DE PRODUCTOS -->
-  <div class="grid" id="grid"></div>
-
-  <script src="data.js"></script>
-  <script>
-    const WHATSAPP = "5494368542942";
-    let filtroGenero = "todos";
-    let filtroCategoria = "todas";
-    let filtroTalle = "todos";
-
-    // CATEGORÍAS POR GÉNERO
-    const categoriasPorGenero = {
-      mujer: ["Vestidos", "Pantalones", "Remeras", "Conjuntos"],
-      hombre: ["Buzos/Camperas", "Remeras", "Pantalones", "Conjuntos"]
-    };
-
-    function abrirSidebar() {
-      document.getElementById("sidebar").classList.add("abierto");
-      document.getElementById("overlay").classList.add("visible");
-    }
-    function cerrarSidebar() {
-      document.getElementById("sidebar").classList.remove("abierto");
-      document.getElementById("overlay").classList.remove("visible");
-    }
-
-    function setFiltro(tipo, valor) {
-      if (tipo === "genero") {
-        filtroGenero = valor;
-        filtroCategoria = "todas";
-      } else if (tipo === "talle") {
-        filtroTalle = valor;
-      }
-      // Actualizar botones activos en sidebar
-      document.querySelectorAll(`[data-filtro="${tipo}"]`).forEach(b => b.classList.remove("activo"));
-      document.querySelector(`[data-filtro="${tipo}"][data-valor="${valor}"]`).classList.add("activo");
-      render();
-    }
-
-    function renderFiltros() {
-      const cont = document.getElementById("filtros");
-      cont.innerHTML = "";
-      let cats;
-      if (filtroGenero === "todos") {
-        cats = [...new Set(productos.map(p => p.categoria))];
-      } else {
-        cats = categoriasPorGenero[filtroGenero] || [];
-      }
-      const btnTodas = document.createElement("button");
-      btnTodas.textContent = "Todas";
-      btnTodas.className = filtroCategoria === "todas" ? "activo" : "";
-      btnTodas.onclick = () => { filtroCategoria = "todas"; render(); };
-      cont.appendChild(btnTodas);
-      cats.forEach(c => {
-        const btn = document.createElement("button");
-        btn.textContent = c;
-        btn.className = filtroCategoria === c ? "activo" : "";
-        btn.onclick = () => { filtroCategoria = c; render(); };
-        cont.appendChild(btn);
-      });
-    }
-
-    function render() {
-      renderFiltros();
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      const texto = document.getElementById("buscador").value.toLowerCase().trim();
-
-      const visibles = productos.filter(p => {
-        // Filtro género
-        if (filtroGenero !== "todos" && p.genero !== filtroGenero) return false;
-        // Filtro categoría
-        if (filtroCategoria !== "todas" && p.categoria !== filtroCategoria) return false;
-        // Filtro talle
-        if (filtroTalle !== "todos" && !p.talles.includes(filtroTalle)) return false;
-        // Buscador (nombre + descripcion)
-        if (texto) {
-          const hay = p.nombre.toLowerCase().includes(texto) || p.descripcion.toLowerCase().includes(texto);
-          if (!hay) return false;
-        }
-        return true;
-      });
-
-      if (visibles.length === 0) {
-        grid.innerHTML = `<p class="sin-resultados">No se encontraron prendas 😕</p>`;
-        return;
-      }
-
-      visibles.forEach((p, i) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
-          <div class="card-body">
-            <span class="tag">${p.genero}</span>
-            <span class="tag">${p.categoria}</span>
-            <h3>${p.nombre}</h3>
-            <p class="desc">${p.descripcion}</p>
-            <p class="precio">$ ${p.precio.toLocaleString("es-AR")}</p>
-            <div class="talles" data-idx="${i}">
-              ${p.talles.map(t => `<span data-talle="${t}">${t}</span>`).join("")}
-            </div>
-            ${p.disponible
-              ? `<a class="btn-encargar" href="#" onclick="encargar(${productos.indexOf(p)}, this)">📲 Encargar</a>`
-              : `<span class="agotado">Agotado</span>`
-            }
-          </div>`;
-        grid.appendChild(card);
-
-        card.querySelectorAll(".talles span").forEach(sp => {
-          sp.onclick = () => {
-            card.querySelectorAll(".talles span").forEach(s => s.classList.remove("sel"));
-            sp.classList.add("sel");
-          };
-        });
-      });
-    }
-
-    function encargar(idx, btn) {
-      const p = productos[idx];
-      const cont = btn.previousElementSibling;
-      const sel = cont.querySelector(".sel");
-      const talle = sel ? sel.textContent : "a definir";
-      const msg = `Hola! Quiero encargar:\n${p.nombre}\nTalle: ${talle}\nPrecio: $${p.precio.toLocaleString("es-AR")}`;
-      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
-    }
-
-    render();
-  </script>
-</body>
-</html>   
+const productos = [
+  // === MUJER ===
+  {
+    nombre: "Vestido midi floral",
+    genero: "mujer",
+    categoria: "Vestidos",
+    precio: 65000,
+    talles: ["S", "M", "L"],
+    colores: ["verde"],
+    imagen: "https://via.placeholder.com/400x500?text=Vestido+Midi",
+    descripcion: "Falda midi, tirante fino, tejido elástico",
+    disponible: true
+  },
+  {
+    nombre: "Pantalón wide leg",
+    genero: "mujer",
+    categoria: "Pantalones",
+    precio: 42000,
+    talles: ["S", "M", "L", "XL"],
+    colores: ["negro", "beige"],
+    imagen: "https://via.placeholder.com/400x500?text=Pantalon+Wide",
+    descripcion: "Cintura alta, pierna ancha, tela sastre",
+    disponible: true
+  },
+  {
+    nombre: "Remera oversize",
+    genero: "mujer",
+    categoria: "Remeras",
+    precio: 18000,
+    talles: ["S", "M", "L"],
+    colores: ["blanco", "negro"],
+    imagen: "https://via.placeholder.com/400x500?text=Remera+Oversize",
+    descripcion: "Algodón 100%, corte holgado",
+    disponible: true
+  },
+  {
+    nombre: "Falda + top bordó",
+    genero: "mujer",
+    categoria: "Conjuntos",
+    precio: 55000,
+    talles: ["S", "M", "L"],
+    colores: ["bordó"],
+    imagen: "https://via.placeholder.com/400x500?text=Conjunto+Top",
+    descripcion: "Falda midi + top sin mangas, ideal para salir",
+    disponible: true
+  },
+  // === HOMBRE ===
+  {
+    nombre: "Buzo capuchón",
+    genero: "hombre",
+    categoria: "Buzos/Camperas",
+    precio: 52000,
+    talles: ["S", "M", "L", "XL"],
+    colores: ["negro", "gris"],
+    imagen: "https://via.placeholder.com/400x500?text=Buzo+Hombre",
+    descripcion: "Felpa interior, capucha ajustable, bolsillo canguro",
+    disponible: true
+  },
+  {
+    nombre: "Remera baggy",
+    genero: "hombre",
+    categoria: "Remeras",
+    precio: 20000,
+    talles: ["S", "M", "L", "XL"],
+    colores: ["blanco", "negro"],
+    imagen: "https://via.placeholder.com/400x500?text=Remera+Baggy",
+    descripcion: "Corte baggy, algodón pesado, cuello reforzado",
+    disponible: true
+  },
+  {
+    nombre: "Pantalón cargo",
+    genero: "hombre",
+    categoria: "Pantalones",
+    precio: 48000,
+    talles: ["S", "M", "L", "XL"],
+    colores: ["verde", "negro"],
+    imagen: "https://via.placeholder.com/400x500?text=Pantalon+Cargo",
+    descripcion: "Corte recto, 6 bolsillos, tela ripstop",
+    disponible: true
+  },
+  {
+    nombre: "Conjunto falda + top",
+    genero: "hombre",
+    categoria: "Conjuntos",
+    precio: 55000,
+    talles: ["S", "M", "L"],
+    colores: ["negro"],
+    imagen: "https://via.placeholder.com/400x500?text=Conjunto+Hombre",
+    descripcion: "Dos piezas, corte moderno",
+    disponible: true
+  }
+];   
