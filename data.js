@@ -1,3 +1,14 @@
+const categorias = [
+  { nombre: "Vestidos", genero: "mujer", imagen: "https://via.placeholder.com/400x500?text=Vestidos" },
+  { nombre: "Pantalones", genero: "mujer", imagen: "https://via.placeholder.com/400x500?text=Pantalones+M" },
+  { nombre: "Remeras", genero: "mujer", imagen: "https://via.placeholder.com/400x500?text=Remeras+M" },
+  { nombre: "Conjuntos", genero: "mujer", imagen: "https://via.placeholder.com/400x500?text=Conjuntos+M" },
+  { nombre: "Buzos/Camperas", genero: "hombre", imagen: "https://via.placeholder.com/400x500?text=Buzos+Camperas" },
+  { nombre: "Remeras", genero: "hombre", imagen: "https://via.placeholder.com/400x500?text=Remeras+H" },
+  { nombre: "Pantalones", genero: "hombre", imagen: "https://via.placeholder.com/400x500?text=Pantalones+H" },
+  { nombre: "Conjuntos", genero: "hombre", imagen: "https://via.placeholder.com/400x500?text=Conjuntos+H" }
+];
+
 const productos = [
   // === MUJER ===
   {
@@ -46,47 +57,47 @@ const productos = [
   },
   // === HOMBRE ===
   {
-    nombre: "Remera básica blanca",
+    nombre: "Buzo capuchón",
+    genero: "hombre",
+    categoria: "Buzos/Camperas",
+    precio: 52000,
+    talles: ["S", "M", "L", "XL"],
+    colores: ["negro", "gris"],
+    imagen: "https://via.placeholder.com/400x500?text=Buzo+Hombre",
+    descripcion: "Felpa interior, capucha ajustable, bolsillo canguro",
+    disponible: true
+  },
+  {
+    nombre: "Remera baggy",
     genero: "hombre",
     categoria: "Remeras",
-    precio: 16000,
+    precio: 20000,
     talles: ["S", "M", "L", "XL"],
-    colores: ["blanco", "negro", "gris"],
-    imagen: "https://via.placeholder.com/400x500?text=Remera+Hombre",
-    descripcion: "Algodón pima, cuello redondo, corte regular",
+    colores: ["blanco", "negro"],
+    imagen: "https://via.placeholder.com/400x500?text=Remera+Baggy",
+    descripcion: "Corte baggy, algodón pesado, cuello reforzado",
     disponible: true
   },
   {
-    nombre: "Pantalón chino",
+    nombre: "Pantalón cargo",
     genero: "hombre",
     categoria: "Pantalones",
-    precio: 45000,
+    precio: 48000,
     talles: ["S", "M", "L", "XL"],
-    colores: ["negro", "café", "azul marino"],
-    imagen: "https://via.placeholder.com/400x500?text=Pantalon+Chino",
-    descripcion: "Tela stretch, tiro medio, pierna recta",
+    colores: ["verde", "negro"],
+    imagen: "https://via.placeholder.com/400x500?text=Pantalon+Cargo",
+    descripcion: "Corte recto, 6 bolsillos, tela ripstop",
     disponible: true
   },
   {
-    nombre: "Campera de jean",
+    nombre: "Conjunto falda + top",
     genero: "hombre",
-    categoria: "Camperas",
-    precio: 58000,
-    talles: ["S", "M", "L", "XL"],
-    colores: ["azul"],
-    imagen: "https://via.placeholder.com/400x500?text=Campera+Jean",
-    descripcion: "Denim rígido, botones metálicos, corte clásico",
-    disponible: true
-  },
-  {
-    nombre: "Polo liso",
-    genero: "hombre",
-    categoria: "Polos",
-    precio: 22000,
-    talles: ["S", "M", "L", "XL"],
-    colores: ["negro", "blanco", "azul"],
-    imagen: "https://via.placeholder.com/400x500?text=Polo+Hombre",
-    descripcion: "Piqué de algodón, 3 botones, manga corta",
+    categoria: "Conjuntos",
+    precio: 55000,
+    talles: ["S", "M", "L"],
+    colores: ["negro"],
+    imagen: "https://via.placeholder.com/400x500?text=Conjunto+Hombre",
+    descripcion: "Dos piezas, corte moderno",
     disponible: true
   }
 ];   
