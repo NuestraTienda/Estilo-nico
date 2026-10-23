@@ -1,12 +1,12 @@
 const categorias = [
-  { nombre: "Vestidos", genero: "mujer", imagen: "https://via.placeholder.com/400x500?text=Vestidos" },
-  { nombre: "Pantalones", genero: "mujer", imagen: "https://via.placeholder.com/400x500?text=Pantalones+M" },
-  { nombre: "Remeras", genero: "mujer", imagen: "https://via.placeholder.com/400x500?text=Remeras+M" },
-  { nombre: "Conjuntos", genero: "mujer", imagen: "https://via.placeholder.com/400x500?text=Conjuntos+M" },
-  { nombre: "Buzos/Camperas", genero: "hombre", imagen: "https://via.placeholder.com/400x500?text=Buzos+Camperas" },
-  { nombre: "Remeras", genero: "hombre", imagen: "https://via.placeholder.com/400x500?text=Remeras+H" },
-  { nombre: "Pantalones", genero: "hombre", imagen: "https://via.placeholder.com/400x500?text=Pantalones+H" },
-  { nombre: "Conjuntos", genero: "hombre", imagen: "https://via.placeholder.com/400x500?text=Conjuntos+H" }
+  { nombre: "Vestidos", genero: "mujer", imagen: "https://i.ibb.co/t7VWDtq/vestidos-mujeres.png" },
+  { nombre: "Remeras", genero: "mujer", imagen: "https://i.ibb.co/KxXNXCXZ/remeras-mujeres.png" },
+  { nombre: "Pantalones", genero: "mujer", imagen: "https://i.ibb.co/kgyQxrfV/pantalones-mujeres.png" },
+  { nombre: "Conjuntos", genero: "mujer", imagen: "https://i.ibb.co/9CFF0Tb/conjuntos-mujeres.png" },
+  { nombre: "Buzos/Camperas", genero: "hombre", imagen: "https://i.ibb.co/d8Ns538/buzo-camperas-de-hombre.png" },
+  { nombre: "Remeras", genero: "hombre", imagen: "https://i.ibb.co/Fbdmxrnh/remeras-hombres.png" },
+  { nombre: "Pantalones", genero: "hombre", imagen: "https://i.ibb.co/bk3t3bZ/pantalones-homrbes.png" },
+  { nombre: "Conjuntos", genero: "hombre", imagen: "https://i.ibb.co/GQpNbDJP/conjunto-hombre.png" }
 ];
 
 const productos = [
