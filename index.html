@@ -12,16 +12,16 @@
     header { background: #fff; padding: 15px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
     .header-top { display: flex; align-items: center; gap: 12px; }
     .hamburger { width: 36px; height: 36px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
-    .hamburger span { display: block; width: 22px; height: 2px; background: #333; border-radius: 2px; }
-    header h1 { font-size: 1.4rem; color: #222; flex: 1; cursor: pointer; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: #333; border-radius: 2px; transition: 0.3s; }
+    header h1 { font-size: 1.4rem; color: #222; flex: 1; }
     .search-box { display: flex; align-items: center; background: #f0f0f0; border-radius: 20px; padding: 8px 14px; flex: 2; max-width: 300px; }
     .search-box input { border: none; background: none; outline: none; font-size: 0.9rem; width: 100%; }
     .search-box svg { width: 18px; height: 18px; margin-right: 8px; fill: #999; }
 
-    /* SIDEBAR */
+    /* MENU LATERAL (HAMBURGUESA) */
     .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #fff; box-shadow: 2px 0 12px rgba(0,0,0,0.15); z-index: 200; transition: left 0.3s; padding: 20px; overflow-y: auto; }
     .sidebar.abierto { left: 0; }
-    .sidebar h2 { font-size: 1.1rem; margin-bottom: 16px; }
+    .sidebar h2 { font-size: 1.1rem; margin-bottom: 16px; color: #222; }
     .sidebar .seccion { margin-bottom: 20px; }
     .sidebar .seccion h3 { font-size: 0.85rem; text-transform: uppercase; color: #888; margin-bottom: 8px; }
     .sidebar .seccion button { display: block; width: 100%; text-align: left; padding: 10px 12px; border: none; background: none; cursor: pointer; font-size: 0.95rem; border-radius: 8px; }
@@ -31,19 +31,18 @@
     .overlay.visible { display: block; }
     .cerrar-menu { position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 1.5rem; cursor: pointer; color: #666; }
 
-    /* GRID DE CATEGORÍAS (PANTALLA INICIAL) */
-    .grid-categorias { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-    .cat-card { position: relative; border-radius: 14px; overflow: hidden; cursor: pointer; box-shadow: 0 3px 12px rgba(0,0,0,0.1); transition: transform 0.2s; }
-    .cat-card:hover { transform: scale(1.03); }
-    .cat-card img { width: 100%; height: 280px; object-fit: cover; display: block; }
-    .cat-card .cat-label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: #fff; padding: 30px 16px 14px; font-size: 1.1rem; font-weight: bold; }
+    /* FILTROS HORIZONTALES */
+    .filtros { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+    .filtros button { padding: 7px 14px; border: 1px solid #ddd; background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
+    .filtros button.activo { background: #333; color: #fff; border-color: #333; }
 
-    /* GRID DE PRODUCTOS */
+    /* GRID */
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
     .card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; }
     .card:hover { transform: translateY(-4px); }
     .card img { width: 100%; height: 320px; object-fit: cover; }
     .card-body { padding: 16px; }
+    .card-body .tag { font-size: 0.75rem; background: #eee; padding: 3px 8px; border-radius: 10px; display: inline-block; margin-bottom: 6px; }
     .card-body h3 { font-size: 1rem; margin-bottom: 4px; }
     .card-body .desc { font-size: 0.85rem; color: #666; margin-bottom: 10px; }
     .card-body .precio { font-size: 1.2rem; font-weight: bold; color: #222; }
@@ -54,54 +53,67 @@
     .btn-encargar:active { background: #1da851; }
     .agotado { display: block; width: 100%; padding: 12px; background: #ccc; color: #888; border: none; border-radius: 8px; font-size: 1rem; margin-top: 10px; text-align: center; }
     .sin-resultados { text-align: center; padding: 60px 20px; color: #999; font-size: 1.1rem; grid-column: 1 / -1; }
-
-    /* BARRA DE CATEGORÍAS (dentro de una categoría) */
-    .barra-cat { display: flex; gap: 8px; padding: 12px 20px; overflow-x: auto; max-width: 1200px; margin: 0 auto; }
-    .barra-cat button { padding: 7px 14px; border: 1px solid #ddd; background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
-    .barra-cat button.activo { background: #333; color: #fff; border-color: #333; }
-    .btn-volver { padding: 10px 16px; border: none; background: #333; color: #fff; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin: 16px 20px 0; }
   </style>
 </head>
 <body>
 
+  <!-- OVERLAY -->
   <div class="overlay" id="overlay" onclick="cerrarSidebar()"></div>
 
+  <!-- SIDEBAR (MENÚ HAMBURGUESA) -->
   <div class="sidebar" id="sidebar">
     <button class="cerrar-menu" onclick="cerrarSidebar()">&times;</button>
-    <h2>Filtrar por talle</h2>
+    <h2>Filtrar</h2>
+
+    <div class="seccion">
+      <h3>Sexo</h3>
+      <button data-filtro="genero" data-valor="todos" class="activo" onclick="setFiltro('genero','todos')">Todos</button>
+      <button data-filtro="genero" data-valor="mujer" onclick="setFiltro('genero','mujer')">Mujer</button>
+      <button data-filtro="genero" data-valor="hombre" onclick="setFiltro('genero','hombre')">Hombre</button>
+    </div>
+
     <div class="seccion">
       <h3>Talle</h3>
-      <button data-filtro="talle" data-valor="todos" class="activo" onclick="setFiltroTalle('todos')">Todos</button>
-      <button data-filtro="talle" data-valor="XS" onclick="setFiltroTalle('XS')">XS</button>
-      <button data-filtro="talle" data-valor="S" onclick="setFiltroTalle('S')">S</button>
-      <button data-filtro="talle" data-valor="M" onclick="setFiltroTalle('M')">M</button>
-      <button data-filtro="talle" data-valor="L" onclick="setFiltroTalle('L')">L</button>
-      <button data-filtro="talle" data-valor="XL" onclick="setFiltroTalle('XL')">XL</button>
-      <button data-filtro="talle" data-valor="XXL" onclick="setFiltroTalle('XXL')">XXL</button>
+      <button data-filtro="talle" data-valor="todos" class="activo" onclick="setFiltro('talle','todos')">Todos</button>
+      <button data-filtro="talle" data-valor="XS" onclick="setFiltro('talle','XS')">XS</button>
+      <button data-filtro="talle" data-valor="S" onclick="setFiltro('talle','S')">S</button>
+      <button data-filtro="talle" data-valor="M" onclick="setFiltro('talle','M')">M</button>
+      <button data-filtro="talle" data-valor="L" onclick="setFiltro('talle','L')">L</button>
+      <button data-filtro="talle" data-valor="XL" onclick="setFiltro('talle','XL')">XL</button>
+      <button data-filtro="talle" data-valor="XXL" onclick="setFiltro('talle','XXL')">XXL</button>
     </div>
   </div>
 
+  <!-- HEADER -->
   <header>
     <div class="header-top">
       <button class="hamburger" onclick="abrirSidebar()">
         <span></span><span></span><span></span>
       </button>
-      <h1 onclick="irInicio()">EstiloÚnico</h1>
+      <h1>EstiloÚnico</h1>
       <div class="search-box">
         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
-        <input type="text" id="buscador" placeholder="Buscar..." oninput="render()">
+        <input type="text" id="buscador" placeholder="Buscar prenda..." oninput="render()">
       </div>
     </div>
+    <div class="filtros" id="filtros"></div>
   </header>
 
-  <div id="contenido"></div>
+  <!-- GRID DE PRODUCTOS -->
+  <div class="grid" id="grid"></div>
 
   <script src="data.js"></script>
   <script>
     const WHATSAPP = "5494368542942";
     let filtroGenero = "todos";
-    let filtroCategoria = null;
+    let filtroCategoria = "todas";
     let filtroTalle = "todos";
+
+    // CATEGORÍAS POR GÉNERO
+    const categoriasPorGenero = {
+      mujer: ["Vestidos", "Pantalones", "Remeras", "Conjuntos"],
+      hombre: ["Buzos/Camperas", "Remeras", "Pantalones", "Conjuntos"]
+    };
 
     function abrirSidebar() {
       document.getElementById("sidebar").classList.add("abierto");
@@ -111,90 +123,57 @@
       document.getElementById("sidebar").classList.remove("abierto");
       document.getElementById("overlay").classList.remove("visible");
     }
-    function setFiltroTalle(valor) {
-      filtroTalle = valor;
-      document.querySelectorAll('[data-filtro="talle"]').forEach(b => b.classList.remove("activo"));
-      document.querySelector(`[data-filtro="talle"][data-valor="${valor}"]`).classList.add("activo");
+
+    function setFiltro(tipo, valor) {
+      if (tipo === "genero") {
+        filtroGenero = valor;
+        filtroCategoria = "todas";
+      } else if (tipo === "talle") {
+        filtroTalle = valor;
+      }
+      // Actualizar botones activos en sidebar
+      document.querySelectorAll(`[data-filtro="${tipo}"]`).forEach(b => b.classList.remove("activo"));
+      document.querySelector(`[data-filtro="${tipo}"][data-valor="${valor}"]`).classList.add("activo");
       render();
     }
-    function irInicio() {
-      filtroGenero = "todos";
-      filtroCategoria = null;
-      filtroTalle = "todos";
-      document.getElementById("buscador").value = "";
-      document.querySelectorAll('[data-filtro="talle"]').forEach(b => b.classList.remove("activo"));
-      document.querySelector('[data-filtro="talle"][data-valor="todos"]').classList.add("activo");
-      render();
-    }
-    function abrirCategoria(genero, cat) {
-      filtroGenero = genero;
-      filtroCategoria = cat;
-      render();
+
+    function renderFiltros() {
+      const cont = document.getElementById("filtros");
+      cont.innerHTML = "";
+      let cats;
+      if (filtroGenero === "todos") {
+        cats = [...new Set(productos.map(p => p.categoria))];
+      } else {
+        cats = categoriasPorGenero[filtroGenero] || [];
+      }
+      const btnTodas = document.createElement("button");
+      btnTodas.textContent = "Todas";
+      btnTodas.className = filtroCategoria === "todas" ? "activo" : "";
+      btnTodas.onclick = () => { filtroCategoria = "todas"; render(); };
+      cont.appendChild(btnTodas);
+      cats.forEach(c => {
+        const btn = document.createElement("button");
+        btn.textContent = c;
+        btn.className = filtroCategoria === c ? "activo" : "";
+        btn.onclick = () => { filtroCategoria = c; render(); };
+        cont.appendChild(btn);
+      });
     }
 
     function render() {
-      const cont = document.getElementById("contenido");
-      cont.innerHTML = "";
-
-      // === PANTALLA INICIAL: grid de categorías ===
-      if (filtroGenero === "todos") {
-        const texto = document.getElementById("buscador").value.toLowerCase().trim();
-
-        // Filtrar categorías por buscador (busca en nombre de categoría o en productos)
-        let cats = categorias;
-        if (texto) {
-          cats = categorias.filter(c => {
-            const hayEnCat = c.nombre.toLowerCase().includes(texto);
-            const hayEnProd = productos.some(p => p.categoria === c.nombre && p.genero === c.genero &&
-              (p.nombre.toLowerCase().includes(texto) || p.descripcion.toLowerCase().includes(texto)));
-            return hayEnCat || hayEnProd;
-          });
-        }
-
-        const grid = document.createElement("div");
-        grid.className = "grid-categorias";
-        cats.forEach(c => {
-          const card = document.createElement("div");
-          card.className = "cat-card";
-          card.onclick = () => abrirCategoria(c.genero, c.nombre);
-          card.innerHTML = `
-            <img src="${c.imagen}" alt="${c.nombre}" loading="lazy">
-            <div class="cat-label">${c.nombre} · ${c.genero.charAt(0).toUpperCase() + c.genero.slice(1)}</div>
-          `;
-          grid.appendChild(card);
-        });
-        cont.appendChild(grid);
-        return;
-      }
-
-      // === VISTA DE CATEGORÍA: barra + prendas ===
-      const catsDelGenero = categorias.filter(c => c.genero === filtroGenero);
-
-      // Barra de categorías
-      const barra = document.createElement("div");
-      barra.className = "barra-cat";
-      catsDelGenero.forEach(c => {
-        const btn = document.createElement("button");
-        btn.textContent = c.nombre;
-        btn.className = filtroCategoria === c.nombre ? "activo" : "";
-        btn.onclick = () => { filtroCategoria = c.nombre; render(); };
-        barra.appendChild(btn);
-      });
-      cont.appendChild(barra);
-
-      // Botón volver
-      const btnVolver = document.createElement("button");
-      btnVolver.className = "btn-volver";
-      btnVolver.textContent = "← Volver al inicio";
-      btnVolver.onclick = irInicio;
-      cont.appendChild(btnVolver);
-
-      // Grid de prendas
+      renderFiltros();
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
       const texto = document.getElementById("buscador").value.toLowerCase().trim();
+
       const visibles = productos.filter(p => {
-        if (p.genero !== filtroGenero) return false;
-        if (filtroCategoria && p.categoria !== filtroCategoria) return false;
+        // Filtro género
+        if (filtroGenero !== "todos" && p.genero !== filtroGenero) return false;
+        // Filtro categoría
+        if (filtroCategoria !== "todas" && p.categoria !== filtroCategoria) return false;
+        // Filtro talle
         if (filtroTalle !== "todos" && !p.talles.includes(filtroTalle)) return false;
+        // Buscador (nombre + descripcion)
         if (texto) {
           const hay = p.nombre.toLowerCase().includes(texto) || p.descripcion.toLowerCase().includes(texto);
           if (!hay) return false;
@@ -202,23 +181,23 @@
         return true;
       });
 
-      const grid = document.createElement("div");
-      grid.className = "grid";
-
       if (visibles.length === 0) {
         grid.innerHTML = `<p class="sin-resultados">No se encontraron prendas 😕</p>`;
+        return;
       }
 
-      visibles.forEach((p) => {
+      visibles.forEach((p, i) => {
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
           <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
           <div class="card-body">
+            <span class="tag">${p.genero}</span>
+            <span class="tag">${p.categoria}</span>
             <h3>${p.nombre}</h3>
             <p class="desc">${p.descripcion}</p>
             <p class="precio">$ ${p.precio.toLocaleString("es-AR")}</p>
-            <div class="talles">
+            <div class="talles" data-idx="${i}">
               ${p.talles.map(t => `<span data-talle="${t}">${t}</span>`).join("")}
             </div>
             ${p.disponible
@@ -235,7 +214,6 @@
           };
         });
       });
-      cont.appendChild(grid);
     }
 
     function encargar(idx, btn) {
