@@ -18,7 +18,7 @@
     .search-box input { border: none; background: none; outline: none; font-size: 0.9rem; width: 100%; }
     .search-box svg { width: 18px; height: 18px; margin-right: 8px; fill: #999; }
 
-    /* SIDEBAR */
+    /* MENU LATERAL (HAMBURGUESA) */
     .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #fff; box-shadow: 2px 0 12px rgba(0,0,0,0.15); z-index: 200; transition: left 0.3s; padding: 20px; overflow-y: auto; }
     .sidebar.abierto { left: 0; }
     .sidebar h2 { font-size: 1.1rem; margin-bottom: 16px; color: #222; }
@@ -31,14 +31,10 @@
     .overlay.visible { display: block; }
     .cerrar-menu { position: absolute; top: 15px; right: 15px; border: none; background: none; font-size: 1.5rem; cursor: pointer; color: #666; }
 
-    /* FILTROS CON IMÁGENES */
-    .filtros { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px; align-items: center; }
-    .filtros .btn-todas { padding: 7px 14px; border: 1px solid #ddd; background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
-    .filtros .btn-todas.activo { background: #333; color: #fff; border-color: #333; }
-    .filtros .cat-img { position: relative; width: 80px; height: 100px; border-radius: 12px; overflow: hidden; cursor: pointer; }
-    .filtros .cat-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .filtros .cat-img .label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.7)); color: #fff; font-size: 0.6rem; text-align: center; padding: 12px 4px 4px; }
-    .filtros .cat-img.activo { outline: 3px solid #333; outline-offset: 2px; }
+    /* FILTROS HORIZONTALES */
+    .filtros { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+    .filtros button { padding: 7px 14px; border: 1px solid #ddd; background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.85rem; }
+    .filtros button.activo { background: #333; color: #fff; border-color: #333; }
 
     /* GRID */
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
@@ -61,8 +57,10 @@
 </head>
 <body>
 
+  <!-- OVERLAY -->
   <div class="overlay" id="overlay" onclick="cerrarSidebar()"></div>
 
+  <!-- SIDEBAR (MENÚ HAMBURGUESA) -->
   <div class="sidebar" id="sidebar">
     <button class="cerrar-menu" onclick="cerrarSidebar()">&times;</button>
     <h2>Filtrar</h2>
@@ -86,6 +84,7 @@
     </div>
   </div>
 
+  <!-- HEADER -->
   <header>
     <div class="header-top">
       <button class="hamburger" onclick="abrirSidebar()">
@@ -100,6 +99,7 @@
     <div class="filtros" id="filtros"></div>
   </header>
 
+  <!-- GRID DE PRODUCTOS -->
   <div class="grid" id="grid"></div>
 
   <script src="data.js"></script>
@@ -108,6 +108,12 @@
     let filtroGenero = "todos";
     let filtroCategoria = "todas";
     let filtroTalle = "todos";
+
+    // CATEGORÍAS POR GÉNERO
+    const categoriasPorGenero = {
+      mujer: ["Vestidos", "Pantalones", "Remeras", "Conjuntos"],
+      hombre: ["Buzos/Camperas", "Remeras", "Pantalones", "Conjuntos"]
+    };
 
     function abrirSidebar() {
       document.getElementById("sidebar").classList.add("abierto");
@@ -125,40 +131,32 @@
       } else if (tipo === "talle") {
         filtroTalle = valor;
       }
+      // Actualizar botones activos en sidebar
       document.querySelectorAll(`[data-filtro="${tipo}"]`).forEach(b => b.classList.remove("activo"));
-      const btn = document.querySelector(`[data-filtro="${tipo}"][data-valor="${valor}"]`);
-      if (btn) btn.classList.add("activo");
+      document.querySelector(`[data-filtro="${tipo}"][data-valor="${valor}"]`).classList.add("activo");
       render();
     }
 
     function renderFiltros() {
       const cont = document.getElementById("filtros");
       cont.innerHTML = "";
-
-      // Botón "Todas"
-      const btnTodas = document.createElement("button");
-      btnTodas.className = "btn-todas" + (filtroCategoria === "todas" ? " activo" : "");
-      btnTodas.textContent = "Todas";
-      btnTodas.onclick = () => { filtroCategoria = "todas"; render(); };
-      cont.appendChild(btnTodas);
-
-      // Imágenes de categorías
       let cats;
       if (filtroGenero === "todos") {
-        cats = categorias;
+        cats = [...new Set(productos.map(p => p.categoria))];
       } else {
-        cats = categorias.filter(c => c.genero === filtroGenero);
+        cats = categoriasPorGenero[filtroGenero] || [];
       }
-
+      const btnTodas = document.createElement("button");
+      btnTodas.textContent = "Todas";
+      btnTodas.className = filtroCategoria === "todas" ? "activo" : "";
+      btnTodas.onclick = () => { filtroCategoria = "todas"; render(); };
+      cont.appendChild(btnTodas);
       cats.forEach(c => {
-        const card = document.createElement("div");
-        card.className = "cat-img" + (filtroCategoria === c.nombre ? " activo" : "");
-        card.onclick = () => { filtroCategoria = c.nombre; render(); };
-        card.innerHTML = `
-          <img src="${c.imagen}" alt="${c.nombre}" loading="lazy">
-          <div class="label">${c.nombre}</div>
-        `;
-        cont.appendChild(card);
+        const btn = document.createElement("button");
+        btn.textContent = c;
+        btn.className = filtroCategoria === c ? "activo" : "";
+        btn.onclick = () => { filtroCategoria = c; render(); };
+        cont.appendChild(btn);
       });
     }
 
@@ -169,9 +167,13 @@
       const texto = document.getElementById("buscador").value.toLowerCase().trim();
 
       const visibles = productos.filter(p => {
+        // Filtro género
         if (filtroGenero !== "todos" && p.genero !== filtroGenero) return false;
+        // Filtro categoría
         if (filtroCategoria !== "todas" && p.categoria !== filtroCategoria) return false;
+        // Filtro talle
         if (filtroTalle !== "todos" && !p.talles.includes(filtroTalle)) return false;
+        // Buscador (nombre + descripcion)
         if (texto) {
           const hay = p.nombre.toLowerCase().includes(texto) || p.descripcion.toLowerCase().includes(texto);
           if (!hay) return false;
@@ -184,7 +186,7 @@
         return;
       }
 
-      visibles.forEach((p) => {
+      visibles.forEach((p, i) => {
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
@@ -195,7 +197,7 @@
             <h3>${p.nombre}</h3>
             <p class="desc">${p.descripcion}</p>
             <p class="precio">$ ${p.precio.toLocaleString("es-AR")}</p>
-            <div class="talles">
+            <div class="talles" data-idx="${i}">
               ${p.talles.map(t => `<span data-talle="${t}">${t}</span>`).join("")}
             </div>
             ${p.disponible
@@ -226,4 +228,4 @@
     render();
   </script>
 </body>
-</html>   
+</html>
